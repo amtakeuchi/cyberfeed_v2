@@ -30,12 +30,15 @@
         </div>
 
         <!-- Search -->
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Search articles..." autocomplete="off">
+        <div class="search-row">
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search articles..." autocomplete="off">
+            </div>
+            <button id="filter-toggle" class="btn-filter-toggle" title="Toggle filters">Filters &#9660;</button>
         </div>
 
-        <!-- Category Filters -->
-        <div class="filters">
+        <!-- Category Filters (collapsible) -->
+        <div class="filters" id="filters-panel">
             <div class="filter-group">
                 <span class="filter-label">SORT</span>
                 <a href="?category={{ selected_category }}&region={{ selected_region }}&time={{ selected_time }}&sort=hot" class="filter-btn sort-btn {% if selected_sort == 'hot' %}active{% endif %}">&#9733; Hot</a>
@@ -142,6 +145,23 @@
             if (countEl && term !== '') {
                 countEl.textContent = visibleCount + ' results';
             }
+        });
+
+        // Filter panel toggle
+        const filterToggle = document.getElementById('filter-toggle');
+        const filtersPanel = document.getElementById('filters-panel');
+        const savedFilterState = localStorage.getItem('cyberfeed-filters') || 'collapsed';
+        
+        if (savedFilterState === 'collapsed') {
+            filtersPanel.classList.add('collapsed');
+            filterToggle.innerHTML = 'Filters &#9650;';
+        }
+        
+        filterToggle.addEventListener('click', function() {
+            filtersPanel.classList.toggle('collapsed');
+            const isCollapsed = filtersPanel.classList.contains('collapsed');
+            localStorage.setItem('cyberfeed-filters', isCollapsed ? 'collapsed' : 'expanded');
+            filterToggle.innerHTML = isCollapsed ? 'Filters &#9650;' : 'Filters &#9660;';
         });
 
         // Theme toggle

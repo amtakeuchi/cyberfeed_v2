@@ -61,7 +61,7 @@ a:hover {
     z-index: 100;
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border);
-    padding: 16px 24px 12px;
+    padding: 12px 24px 10px;
     backdrop-filter: blur(12px);
 }
 
@@ -69,7 +69,7 @@ a:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .logo {
@@ -148,8 +148,15 @@ a:hover {
    SEARCH
    ============================================================ */
 
+.search-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
 .search-bar {
-    margin-bottom: 12px;
+    flex: 1;
 }
 
 .search-bar input {
@@ -174,14 +181,44 @@ a:hover {
     box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15);
 }
 
+.btn-filter-toggle {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.btn-filter-toggle:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
 /* ============================================================
-   FILTERS
+   FILTERS (collapsible)
    ============================================================ */
 
 .filters {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow: hidden;
+    max-height: 500px;
+    transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
+    opacity: 1;
+    padding-top: 2px;
+}
+
+.filters.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
 }
 
 .filter-group {
