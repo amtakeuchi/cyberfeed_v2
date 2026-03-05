@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberFeed</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="logo">
+                <span class="logo-icon">&#9632;</span>
+                <h1>CYBERFEED</h1>
+                <span class="version">v2.0</span>
+            </div>
+            <div class="header-meta">
+                {% if ai_enabled %}
+                <span class="ai-badge">AI ON</span>
+                {% endif %}
+                <span class="article-count">{{ filtered_count }} of {{ total_count }} articles</span>
+                <span class="last-updated">Updated {{ last_updated }}</span>
+                <button id="theme-btn" class="btn-theme" title="Toggle light/dark mode">&#9788;</button>
+                <button id="refresh-btn" class="btn-refresh" title="Force refresh feeds">&#8635;</button>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search articles..." autocomplete="off">
+        </div>
+
+        <!-- Category Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <span class="filter-label">SORT</span>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time={{ selected_time }}&sort=hot" class="filter-btn sort-btn {% if selected_sort == 'hot' %}active{% endif %}">&#9733; Hot</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time={{ selected_time }}&sort=new" class="filter-btn sort-btn {% if selected_sort == 'new' %}active{% endif %}">&#9201; New</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time={{ selected_time }}&sort=top" class="filter-btn sort-btn {% if selected_sort == 'top' %}active{% endif %}">&#9650; Top</a>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">TOPIC</span>
+                <a href="?category=all&region={{ selected_region }}&time={{ selected_time }}&sort={{ selected_sort }}" class="filter-btn {% if selected_category == 'all' %}active{% endif %}">All</a>
+                {% for cat in categories %}
+                <a href="?category={{ cat }}&region={{ selected_region }}&time={{ selected_time }}&sort={{ selected_sort }}" class="filter-btn cat-{{ cat|lower|replace('/', '-')|replace(' ', '-') }} {% if selected_category == cat %}active{% endif %}">{{ cat }}</a>
+                {% endfor %}
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">REGION</span>
+                <a href="?category={{ selected_category }}&region=all&time={{ selected_time }}&sort={{ selected_sort }}" class="filter-btn {% if selected_region == 'all' %}active{% endif %}">All</a>
+                {% for reg in regions %}
+                <a href="?category={{ selected_category }}&region={{ reg }}&time={{ selected_time }}&sort={{ selected_sort }}" class="filter-btn {% if selected_region == reg %}active{% endif %}">{{ reg }}</a>
+                {% endfor %}
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">TIME</span>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=all&sort={{ selected_sort }}" class="filter-btn {% if selected_time == 'all' %}active{% endif %}">All</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=1h&sort={{ selected_sort }}" class="filter-btn {% if selected_time == '1h' %}active{% endif %}">1h</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=6h&sort={{ selected_sort }}" class="filter-btn {% if selected_time == '6h' %}active{% endif %}">6h</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=today&sort={{ selected_sort }}" class="filter-btn {% if selected_time == 'today' %}active{% endif %}">Today</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=24h&sort={{ selected_sort }}" class="filter-btn {% if selected_time == '24h' %}active{% endif %}">24h</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=48h&sort={{ selected_sort }}" class="filter-btn {% if selected_time == '48h' %}active{% endif %}">48h</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=week&sort={{ selected_sort }}" class="filter-btn {% if selected_time == 'week' %}active{% endif %}">Week</a>
+                <a href="?category={{ selected_category }}&region={{ selected_region }}&time=month&sort={{ selected_sort }}" class="filter-btn {% if selected_time == 'month' %}active{% endif %}">Month</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Feed -->
+    <main class="feed">
+        {% if articles %}
+            {% for article in articles %}
+            <article class="card {% if article.importance >= 12 %}card-critical{% elif article.importance >= 8 %}card-important{% endif %}" data-title="{{ article.title|lower }}" data-content="{{ article.content|lower }}" data-category="{{ article.category }}">
+                <div class="card-header">
+                    <div class="card-tags">
+                        <span class="tag tag-category cat-{{ article.category|lower|replace('/', '-')|replace(' ', '-') }}">{{ article.category }}</span>
+                        <span class="tag tag-region">{{ article.region }}</span>
+                        {% if article.importance >= 12 %}
+                        <span class="tag tag-hot">&#9733; HIGH PRIORITY</span>
+                        {% elif article.importance >= 8 %}
+                        <span class="tag tag-warm">NOTABLE</span>
+                        {% endif %}
+                    </div>
+                    <span class="card-time">{{ article.time_ago }}</span>
+                </div>
+                <h2 class="card-title">
+                    <a href="{{ article.link }}" target="_blank" rel="noopener">{{ article.title }}</a>
+                </h2>
+                {% if article.summary %}
+                <p class="card-summary">
+                    <span class="summary-label">AI</span>
+                    {{ article.summary }}
+                </p>
+                {% endif %}
+                <p class="card-content">{{ article.content }}</p>
+                <div class="card-footer">
+                    <span class="card-source">{{ article.source }}</span>
+                    <a href="{{ article.link }}" target="_blank" rel="noopener" class="read-link">Read &#8594;</a>
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No articles found matching your filters.</p>
+                <p class="empty-hint">Try widening your time window or clearing a filter.</p>
+                <a href="/" class="filter-btn active">Clear all filters</a>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Back to top -->
+    <button id="top-btn" class="btn-top" title="Back to top">&#8593;</button>
+
+    <script>
+        // Live search — filters as you type
+        const searchInput = document.getElementById('search-input');
+        const cards = document.querySelectorAll('.card');
+        
+        searchInput.addEventListener('input', function() {
+            const term = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                if (term === '') {
+                    card.style.display = '';
+                    visibleCount++;
+                    return;
+                }
+                const title = card.dataset.title || '';
+                const content = card.dataset.content || '';
+                const matches = title.includes(term) || content.includes(term);
+                card.style.display = matches ? '' : 'none';
+                if (matches) visibleCount++;
+            });
+            
+            // Update count display
+            const countEl = document.querySelector('.article-count');
+            if (countEl && term !== '') {
+                countEl.textContent = visibleCount + ' results';
+            }
+        });
+
+        // Theme toggle
+        const themeBtn = document.getElementById('theme-btn');
+        const savedTheme = localStorage.getItem('cyberfeed-theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.body.classList.add('light');
+            themeBtn.innerHTML = '&#9790;'; // moon
+        }
+        
+        themeBtn.addEventListener('click', function() {
+            document.body.classList.toggle('light');
+            const isLight = document.body.classList.contains('light');
+            localStorage.setItem('cyberfeed-theme', isLight ? 'light' : 'dark');
+            themeBtn.innerHTML = isLight ? '&#9790;' : '&#9788;'; // moon or sun
+        });
+
+        // Force refresh
+        document.getElementById('refresh-btn').addEventListener('click', function() {
+            fetch('/refresh')
+                .then(r => r.json())
+                .then(() => window.location.reload())
+                .catch(() => window.location.reload());
+        });
+
+        // Keyboard shortcut: / to focus search
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+                searchInput.blur();
+            }
+        });
+
+        // Back to top button
+        const topBtn = document.getElementById('top-btn');
+        window.addEventListener('scroll', function() {
+            topBtn.style.display = window.scrollY > 400 ? 'block' : 'none';
+        });
+        topBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,576 @@
+/* ============================================================
+   CYBERFEED v2.0 — Dark Terminal Aesthetic
+   ============================================================ */
+
+:root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-card: #1c2128;
+    --bg-card-hover: #21262d;
+    --border: #30363d;
+    --border-light: #3d444d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --accent-cyan: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-orange: #d29922;
+    --accent-red: #f85149;
+    --accent-purple: #bc8cff;
+    --accent-pink: #f778ba;
+    --accent-blue: #79c0ff;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    --font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+    --radius: 6px;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Reset */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--accent-cyan);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+a:hover {
+    color: var(--accent-blue);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px 12px;
+    backdrop-filter: blur(12px);
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    color: var(--accent-cyan);
+    font-size: 18px;
+}
+
+.logo h1 {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+}
+
+.version {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 3px;
+}
+
+.header-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+.ai-badge {
+    background: var(--accent-green);
+    color: #0d1117;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 3px;
+    letter-spacing: 1px;
+}
+
+.article-count {
+    color: var(--text-secondary);
+}
+
+.last-updated {
+    color: var(--text-muted);
+}
+
+.btn-refresh {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 18px;
+    padding: 2px 8px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+}
+
+.btn-refresh:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+.search-bar {
+    margin-bottom: 12px;
+}
+
+.search-bar input {
+    width: 100%;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.search-bar input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-bar input:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15);
+}
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+
+.filters {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    min-width: 55px;
+    text-transform: uppercase;
+}
+
+.filter-btn {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: var(--accent-cyan);
+    color: #0d1117;
+    border-color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+/* ============================================================
+   FEED / CARDS
+   ============================================================ */
+
+.feed {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    transition: all 0.15s ease;
+}
+
+.card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-light);
+    box-shadow: var(--shadow);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.card-tags {
+    display: flex;
+    gap: 6px;
+}
+
+.tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.tag-category {
+    color: #0d1117;
+}
+
+.tag-region {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.tag-hot {
+    background: var(--accent-red);
+    color: #000;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.tag-warm {
+    background: var(--accent-orange);
+    color: #000;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Important article cards */
+.card-critical {
+    border-left: 3px solid var(--accent-red);
+}
+
+.card-important {
+    border-left: 3px solid var(--accent-orange);
+}
+
+/* Category colors */
+.cat-cybersecurity { background: var(--accent-red); color: #000; }
+.cat-technology { background: var(--accent-purple); color: #000; }
+.cat-finance { background: var(--accent-green); color: #000; }
+.cat-crypto { background: var(--accent-orange); color: #000; }
+.cat-world-news { background: var(--accent-cyan); color: #000; }
+.cat-defense-geopolitics { background: var(--accent-pink); color: #000; }
+.cat-canada { background: #f0f0f0; color: #000; }
+
+.card-time {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 8px;
+}
+
+.card-title a {
+    color: var(--text-primary);
+}
+
+.card-title a:hover {
+    color: var(--accent-cyan);
+}
+
+.card-summary {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--accent-green);
+    background: rgba(63, 185, 80, 0.06);
+    border-left: 2px solid var(--accent-green);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 0 4px 4px 0;
+}
+
+.summary-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    background: var(--accent-green);
+    color: #0d1117;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-right: 6px;
+    letter-spacing: 1px;
+    vertical-align: middle;
+}
+
+.card-content {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+.card-source {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.read-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-cyan);
+    font-weight: 600;
+}
+
+.read-link:hover {
+    color: var(--accent-blue);
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+.empty-state .filter-btn {
+    margin-top: 16px;
+    display: inline-block;
+}
+
+.empty-hint {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+
+.btn-top {
+    display: none;
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 18px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    z-index: 200;
+    box-shadow: var(--shadow);
+}
+
+.btn-top:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 16px 10px;
+    }
+    
+    .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .header-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .feed {
+        padding: 16px;
+    }
+    
+    .card {
+        padding: 12px 14px;
+    }
+    
+    .card-title {
+        font-size: 15px;
+    }
+    
+    .filter-group {
+        gap: 4px;
+    }
+    
+    .filter-btn {
+        padding: 3px 8px;
+        font-size: 11px;
+    }
+}
+
+/* ============================================================
+   LIGHT THEME
+   ============================================================ */
+
+body.light {
+    --bg-primary: #f6f8fa;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f0f2f5;
+    --border: #d0d7de;
+    --border-light: #bbc0c7;
+    --text-primary: #1f2328;
+    --text-secondary: #59636e;
+    --text-muted: #818b98;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+body.light .card-summary {
+    background: rgba(63, 185, 80, 0.08);
+}
+
+body.light .filter-btn {
+    background: #ffffff;
+}
+
+body.light .filter-btn.active {
+    color: #ffffff;
+}
+
+body.light .search-bar input {
+    background: #ffffff;
+}
+
+/* Theme toggle button */
+.btn-theme {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 16px;
+    padding: 2px 8px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1;
+}
+
+.btn-theme:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-light);
+}
+
+/* ============================================================
+   LOADING ANIMATION (for search)
+   ============================================================ */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.2s ease;
+}
